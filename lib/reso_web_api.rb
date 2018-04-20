@@ -1,14 +1,18 @@
 require 'logger'
 
+require 'reso_web_api/configuration'
 require 'reso_web_api/client'
 require 'reso_web_api/version'
 
 module ResoWebApi
+  extend Configuration
+
   def self.client(options = {})
     Thread.current[:reso_web_api_client] ||= ResoWebApi::Client.new(options)
   end
 
   def self.reset
+    reset_configuration
     Thread.current[:reso_web_api_client] = nil
   end
 
