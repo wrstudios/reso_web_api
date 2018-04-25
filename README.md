@@ -1,8 +1,8 @@
 # ResoWebApi
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/reso_web_api`. To experiment with that code, run `bin/console` for an interactive prompt.
+A Ruby wrapper for the [RESO Web API][reso-web-api].
 
-TODO: Delete this and the text above, and describe your gem
+[reso-web-api]: https://www.reso.org/reso-web-api/
 
 ## Installation
 
@@ -22,7 +22,7 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+This is still a work in progress. Details to come soon.
 
 ## Development
 
@@ -32,7 +32,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/reso_web_api.
+Bug reports and pull requests are welcome on GitHub at https://github.com/wrstudios/reso_web_api.
 
 ## License
 
