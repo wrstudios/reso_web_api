@@ -25,7 +25,8 @@ RSpec.describe ResoWebApi do
 
   describe '#logger' do
     it 'lets me access and override the logger' do
-      expect(subject.logger.level).to eq(Logger::INFO)
+      # Overridden in spec_helper.rb
+      expect(subject.logger.level).to eq(Logger::DEBUG)
 
       subject.logger = Logger.new('/dev/null')
       subject.logger.level = Logger::WARN
