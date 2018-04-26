@@ -1,6 +1,6 @@
 # ResoWebApi
 
-A Ruby wrapper for the [RESO Web API][reso-web-api].
+A Ruby library to connects to MLS servers conforming to the [RESO Web API][reso-web-api] standard.
 
 [reso-web-api]: https://www.reso.org/reso-web-api/
 
@@ -22,7 +22,24 @@ Or install it yourself as:
 
 ## Usage
 
-This is still a work in progress. Details to come soon.
+Basic
+
+```ruby
+require 'reso_web_api'
+
+ResoWebApi.configure do |config|
+  config.service_url = 'https://api.my-mls.org/RESO/OData/'
+  config.auth_url    = 'https://oauth.my-mls.org/connect/token'
+  config.auth_scope  = 'odata'
+  config.api_key     = 'deadbeef'
+  config.api_secret  = 'T0pS3cr3t'
+end
+
+# Iterate over all properties -- WARNING! Might take a long time
+ResoWebApi.client.properties.each do |property|
+  puts "#{property['ListPrice']} #{property['StandardStatus']}"
+end
+```
 
 ## Development
 

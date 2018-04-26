@@ -1,16 +1,19 @@
 module ResoWebApi
   module Configuration
     VALID_OPTION_KEYS = [
-      :api_key, :api_secret, :auth_endpoint, :endpoint, :user_agent
+      :api_key, :api_secret, :auth_url, :auth_scope, :auth_mode, :service_url, :timeout, :user_agent
     ]
     attr_accessor *VALID_OPTION_KEYS
 
-    DEFAULT_API_KEY = nil
-    DEFAULT_API_SECRET = nil
-    DEFAULT_API_USER  = nil
-    DEFAULT_AUTH_ENDPOINT = nil
-    DEFAULT_ENDPOINT = nil
-    DEFAULT_USER_AGENT = "Reso Web API Ruby gem #{VERSION}"
+    DEFAULT_API_KEY     = nil
+    DEFAULT_API_SECRET  = nil
+    DEFAULT_API_USER    = nil
+    DEFAULT_AUTH_URL    = nil
+    DEFAULT_AUTH_SCOPE  = nil
+    DEFAULT_AUTH_MODE   = ResoWebApi::Authentication::TokenAuth
+    DEFAULT_SERVICE_URL = nil
+    DEFAULT_TIMEOUT     = 5
+    DEFAULT_USER_AGENT  = "Reso Web API Ruby gem #{VERSION}"
 
     def configure
       yield self
