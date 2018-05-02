@@ -1,32 +1,33 @@
+require_relative '../base_client'
+
 module ResoWebApi
   module Authentication
     # This base class defines the basic interface support by all client authentication implementations.
-    class BaseAuth
+    class BaseAuth < BaseClient
       attr_accessor :session
 
-      # All inheriting classes should accept the reso_web_api client as part of initialization
-      def initialize(client)
-        @client = client
+      def initialize(api_key:, api_secret:, endpoint:, user_agent: USER_AGENT)
+        super(endpoint: endpoint, user_agent: user_agent)
+        @api_key    = api_key
+        @api_secret = api_secret
       end
 
-      # Perform requests to authenticate the client with the API
-      def authenticate
-        raise NotImplementedError, "Implement me!"
+      # @abstract Perform requests to authenticate the client with the API
+      # @return [Access] The access token object
+      def authenticate(*)
+        raise NotImplementedError, 'Implement me!'
       end
 
-      # Called before running authenticate (except)
-      def authenticated?
-        !(session.nil? || session.expired?)
+      # @return [Boolean] Whether the access object can be refreshed
+      # @param access [Access|String] the access to refresh
+      def refreshable?(access)
+        false
       end
 
-      # Terminate the active session
-      def logout
-        raise NotImplementedError, "Implement me!"
-      end
-
-      # Return the authenticated OData service instance
-      def service
-        raise NotImplementedError, "Implement me!"
+      # @abstract Refresh the authentication and return the refreshed access
+      # @param access [Access|String] the access to refresh
+      def refresh(access)
+        raise NotImplementedError, 'Implement Me!'
       end
     end
   end

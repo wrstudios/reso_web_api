@@ -1,26 +1,21 @@
+require_relative 'base_auth'
+
 module ResoWebApi
   module Authentication
-
     # This implements a basic token authentication, in which a username/password
     # (or API key / secret) combination is sent to a special token endpoint in
     # exchange for a HTTP Bearer token with a limited lifetime.
     class TokenAuth < BaseAuth
+      attr_reader :grant_type, :scope
 
-      def initialize(client)
-        super(client)
+      def initialize(endpoint:, api_key:, api_secret:, grant_type: 'client_credentials', scope:)
+        super(endpoint: endpoint, api_key: api_key, api_secret: api_secret)
+        @grant_type = grant_type
+        @scope      = scope
       end
 
       def authenticate
-        ResoWebApi.logger.debug { "Authenticating to #{@client.auth_url}" }
-
-        params = {
-          client_id:     @client.api_key,
-          client_secret: @client.api_secret,
-          grant_type:   'client_credentials',
-          scope:         @client.auth_scope
-        }
-        response = @client.connection.post @client.auth_url, params
-        ResoWebApi.logger.debug("Authentication Response: #{response.body}")
+        response = connection.post nil, auth_params
         body = JSON.parse response.body
 
         unless response.success?
@@ -28,37 +23,22 @@ module ResoWebApi
           raise ClientError, status: response.status, message: message
         end
 
-        @session = Session.new(body)
-        ResoWebApi.logger.debug("Created session: #{@session.inspect}")
-
-        @session
-      end
-
-      def logout
-        @session = nil
-      end
-
-      def service
-        if @service && authenticated?
-          @service
-        else
-          authenticate
-          @service = OData4::Service.new(@client.service_url, service_options)
-          @service.logger = ResoWebApi.logger
-          @service
-        end
+        Session.new(body)
       end
 
       private
 
-      def service_options
+      def auth_params
         {
-          typhoeus: {
-            headers: @client.headers.merge({
-              'Authorization' => "#{session.token_type} #{session.access_token}"
-            })
-          }
+          client_id:     @api_key,
+          client_secret: @api_secret,
+          grant_type:    grant_type,
+          scope:         scope
         }
+      end
+
+      def connection
+        super.basic_auth(@api_key, @api_secret) && super
       end
     end
 
@@ -74,7 +54,11 @@ module ResoWebApi
       end
 
       def expired?
-        Time.now > @expires
+        Time.now > expires
+      end
+
+      def valid?
+        access_token && !expired?
       end
     end
   end

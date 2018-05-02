@@ -3,10 +3,7 @@ require 'logger'
 require 'odata4'
 
 require 'reso_web_api/errors'
-require 'reso_web_api/authentication'
 require 'reso_web_api/configuration'
-require 'reso_web_api/connection'
-require 'reso_web_api/resources'
 require 'reso_web_api/client'
 require 'reso_web_api/version'
 
