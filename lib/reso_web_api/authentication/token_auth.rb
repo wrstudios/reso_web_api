@@ -45,12 +45,12 @@ module ResoWebApi
     # Session class for TokenAuth. This stores the access token, the token type
     # (usually `Bearer`), and the expiration date of the token.
     class Session
-      attr_accessor :access_token, :expires, :token_type
+      attr_accessor :token, :expires, :token_type
 
       def initialize(options = {})
-        @access_token = options['access_token']
-        @expires      = Time.now + options['expires_in']
-        @token_type   = options['token_type']
+        @token      = options['access_token']
+        @expires    = Time.now + options['expires_in']
+        @token_type = options['token_type']
       end
 
       def expired?
@@ -58,7 +58,7 @@ module ResoWebApi
       end
 
       def valid?
-        access_token && !expired?
+        token && !expired?
       end
     end
   end
