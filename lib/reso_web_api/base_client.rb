@@ -1,21 +1,24 @@
 require 'faraday'
 
 module ResoWebApi
-  # Base class for HTTP clients
+  # Base class for Faraday-based HTTP clients
   class BaseClient
-    USER_AGENT = "Reso Web API Ruby Gem v#{VERSION}"
-
     attr_reader :endpoint, :user_agent, :adapter
+
+    USER_AGENT = "Reso Web API Ruby Gem v#{VERSION}"
+    ADAPTER    = Faraday.default_adapter
 
     # Create a new client instance.
     # @param endpoint [String] The base URL for requests
     # @param user_agent [String] The user agent header to send
-    def initialize(endpoint:, user_agent: USER_AGENT, adapter: Faraday.default_adapter)
+    def initialize(endpoint:, user_agent: USER_AGENT, adapter: ADAPTER)
       @endpoint   = endpoint
       @user_agent = user_agent
       @adapter    = adapter
     end
 
+    # Return the {Faraday::Connection} object for this client.
+    # @return [Faraday::Connection] The connection object
     def connection
       @connection ||= Faraday.new(url: endpoint, headers: headers) do |conn|
         conn.request :url_encoded
@@ -24,6 +27,8 @@ module ResoWebApi
       end
     end
 
+    # Return the headers to be sent with every request.
+    # @return [Hash] The request headers.
     def headers
       {
         :user_agent => user_agent
