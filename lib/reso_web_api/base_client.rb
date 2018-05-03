@@ -19,12 +19,15 @@ module ResoWebApi
 
     # Return the {Faraday::Connection} object for this client.
     # @return [Faraday::Connection] The connection object
-    def connection
-      @connection ||= Faraday.new(url: endpoint, headers: headers) do |conn|
-        conn.request :url_encoded
-        # conn.options[:timeout] = self.timeout
-        conn.adapter adapter
-      end
+    def connection(&block)
+      @connection ||= lambda do
+        block ||= Proc.new do |conn|
+          conn.request :url_encoded
+          # conn.options[:timeout] = self.timeout
+          conn.adapter adapter
+        end
+        Faraday.new(url: endpoint, headers: headers, &block)
+      end.call
     end
 
     # Return the headers to be sent with every request.

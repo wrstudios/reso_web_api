@@ -11,6 +11,19 @@ RSpec.describe ResoWebApi::BaseClient do
     describe '#connection' do
       it { expect(subject.connection).to be_a(Faraday::Connection) }
       it { expect(subject.connection.url_prefix.to_s).to eq(endpoint) }
+      it 'uses default middleware' do
+        expect(subject.connection.builder.handlers).to eq([
+          Faraday::Request::UrlEncoded, Faraday::Adapter::NetHttp
+        ])
+      end
+      it 'allows customizing the middleware stack by passing a block' do
+        subject.connection do |conn|
+          conn.adapter :typhoeus
+        end
+        expect(subject.connection.builder.handlers).to eq([
+          Faraday::Adapter::Typhoeus
+        ])
+      end
     end
 
     describe '#headers' do
@@ -26,6 +39,14 @@ RSpec.describe ResoWebApi::BaseClient do
 
     describe '#adapter' do
       it { expect(subject.adapter).to eq(adapter) }
+    end
+
+    describe '#connection' do
+      it 'uses the correct adapter' do
+        expect(subject.connection.builder.handlers).to include(
+          Faraday::Adapter::Typhoeus
+        )
+      end
     end
 
     describe '#headers' do
