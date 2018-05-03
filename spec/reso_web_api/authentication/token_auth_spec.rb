@@ -1,7 +1,5 @@
 RSpec.describe ResoWebApi::Authentication::TokenAuth do
-  subject do
-    ResoWebApi::Authentication::TokenAuth.new(config)
-  end
+  subject { ResoWebApi::Authentication::TokenAuth.new(config) }
   let(:config) {{
     endpoint:   ENV['AUTH_ENDPOINT'],
     api_key:    ENV['API_KEY'],
@@ -12,7 +10,7 @@ RSpec.describe ResoWebApi::Authentication::TokenAuth do
   describe '#authenticate' do
     it 'authenticates the API credentials' do
       access = subject.authenticate
-      expect(access).to be_a(ResoWebApi::Authentication::Session)
+      expect(access).to be_a(ResoWebApi::Authentication::Access)
       expect(access).to be_valid
     end
 

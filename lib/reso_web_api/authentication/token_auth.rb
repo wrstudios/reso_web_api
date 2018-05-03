@@ -1,4 +1,5 @@
 require_relative 'base_auth'
+require_relative 'access'
 
 module ResoWebApi
   module Authentication
@@ -23,7 +24,7 @@ module ResoWebApi
           raise ClientError, status: response.status, message: message
         end
 
-        Session.new(body)
+        Access.new(body)
       end
 
       private
@@ -39,26 +40,6 @@ module ResoWebApi
 
       def connection
         super.basic_auth(@api_key, @api_secret) && super
-      end
-    end
-
-    # Session class for TokenAuth. This stores the access token, the token type
-    # (usually `Bearer`), and the expiration date of the token.
-    class Session
-      attr_accessor :token, :expires, :token_type
-
-      def initialize(options = {})
-        @token      = options['access_token']
-        @expires    = Time.now + options['expires_in']
-        @token_type = options['token_type']
-      end
-
-      def expired?
-        Time.now > expires
-      end
-
-      def valid?
-        token && !expired?
       end
     end
   end
