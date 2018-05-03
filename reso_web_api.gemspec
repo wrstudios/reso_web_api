@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency 'faraday', '~> 0.15.0'
-  spec.add_dependency 'odata4', '~> 0.8.1'
+  spec.add_dependency 'odata4', '~> 0.9.0'
 
   spec.add_development_dependency "bundler", "~> 1.16"
   spec.add_development_dependency "rake", "~> 10.0"
