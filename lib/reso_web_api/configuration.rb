@@ -1,3 +1,5 @@
+require_relative 'authentication/token_auth'
+
 module ResoWebApi
   module Configuration
     VALID_OPTION_KEYS = [

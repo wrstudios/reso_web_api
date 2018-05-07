@@ -10,7 +10,9 @@ module ResoWebApi
 
     STANDARD_RESOURCES.each do |method, resource|
       define_method(method) do
-        resources[resource]
+        handle_retryable_errors do
+          resources[resource]
+        end
       end
     end
 

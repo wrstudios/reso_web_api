@@ -27,28 +27,42 @@ module ResoWebApi
       super.merge({ accept: 'application/json' })
     end
 
-    # Returns the (authorized) connection object.
-    # @return [Faraday::Connection] The connection object
-    def connection
-      authenticate unless @access && @access.valid?
-      super.authorization(@access.token_type, @access.token) && super
-    end
+    # Makes a request to the OData service, taking care of properly authenticating
+    # and authorizing the connection, and retrying in case of errors.
+    # @yield [OData4::Service] An {OData4::Service} object
+    def request(&block)
+      ensure_acess_is_valid
 
-    # Returns the {OData4::Service} object for OData access
-    # @return [OData4::Service] The service object
-    def service
-      @service ||= OData4::Service.new(connection)
+      handle_retryable_errors do
+        yield service
+      end
     end
 
     private
 
-    def ensure_acess_is_valid
-      refresh if @access.expired? && @auth && @auth.refreshable?(@access)
+    # Returns the {OData4::Service} used by the client.
+    # @return [OData4::Service] The service object.
+    def service
+      @service ||= OData4::Service.new(connection)
     end
 
-    def handle_retryable_errors
-      response = yield
-      # TODO rescue from retryable errors
+    def ensure_acess_is_valid
+      authenticate unless @access && @access.valid?
+      connection.authorization(@access.token_type, @access.token)
+    end
+
+    def handle_retryable_errors(&block)
+      attempts = 0
+      begin
+        yield
+      rescue OData4::Errors::AccessDenied
+        unless (attempts += 1) > 1
+          authenticate
+          retry
+        else
+          raise
+        end
+      end
     end
   end
 end
