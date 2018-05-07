@@ -1,4 +1,5 @@
 require_relative 'base_client'
+require_relative 'service_proxy'
 
 module ResoWebApi
   # Main class to run requests against a RESO Web API server.
@@ -27,42 +28,11 @@ module ResoWebApi
       super.merge({ accept: 'application/json' })
     end
 
-    # Makes a request to the OData service, taking care of properly authenticating
-    # and authorizing the connection, and retrying in case of errors.
-    # @yield [OData4::Service] An {OData4::Service} object
-    def request(&block)
-      ensure_acess_is_valid
-
-      handle_retryable_errors do
-        yield service
-      end
-    end
-
-    private
-
-    # Returns the {OData4::Service} used by the client.
-    # @return [OData4::Service] The service object.
+    # Returns a proxied {OData4::Service} that attempts to ensure a  properly
+    # authenticated and authorized connection
+    # @return [ResoWebApi::ServiceProxy] The service proxy.
     def service
-      @service ||= OData4::Service.new(connection)
-    end
-
-    def ensure_acess_is_valid
-      authenticate unless @access && @access.valid?
-      connection.authorization(@access.token_type, @access.token)
-    end
-
-    def handle_retryable_errors(&block)
-      attempts = 0
-      begin
-        yield
-      rescue OData4::Errors::AccessDenied
-        unless (attempts += 1) > 1
-          authenticate
-          retry
-        else
-          raise
-        end
-      end
+      @service ||= ServiceProxy.new(self)
     end
   end
 end
