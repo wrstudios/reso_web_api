@@ -1,5 +1,6 @@
 require_relative 'base_client'
 require_relative 'service_proxy'
+require_relative 'authentication/middleware'
 
 module ResoWebApi
   # Main class to run requests against a RESO Web API server.
@@ -21,6 +22,14 @@ module ResoWebApi
     # @return [Hash] The request headers
     def headers
       super.merge({ accept: 'application/json' })
+    end
+
+    # Return the {Faraday::Connection} object for this client.
+    # @return [Faraday::Connection] The connection object
+    def connection
+      super do |conn|
+        conn.use Authentication::Middleware, @auth
+      end
     end
 
     # Returns a proxied {OData4::Service} that attempts to ensure a  properly

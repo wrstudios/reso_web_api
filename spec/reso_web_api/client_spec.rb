@@ -12,25 +12,22 @@ RSpec.describe ResoWebApi::Client do
 
     it "sets the client's access to the result of the call" do
       allow(auth).to receive(:authenticate).and_return(access)
-
       subject.authenticate
       expect(subject.access).to eq(access)
     end
   end
 
-  describe '#refresh' do
-    it 'calls #refresh on the auth strategy' do
-      subject.access = access
-
-      expect(auth).to receive(:refresh).with(subject.access)
-      subject.refresh
+  describe '#connection' do
+    it 'injects authentication middleware' do
+      expect(subject.connection.builder.handlers).to include(
+        ResoWebApi::Authentication::Middleware
+      )
     end
+  end
 
-    it "sets the client's access to the result of the call" do
-      allow(auth).to receive(:refresh).and_return(access)
-
-      subject.refresh
-      expect(subject.access).to eq(access)
+  describe '#service' do
+    it 'returns a service proxy' do
+      expect(subject.service).to be_a(ResoWebApi::ServiceProxy)
     end
   end
 end

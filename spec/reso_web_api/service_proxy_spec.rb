@@ -16,7 +16,7 @@ RSpec.describe ResoWebApi::ServiceProxy do
     # Mock service to raise an exception the first time and return a value the second
     allow(client).to receive(:service).and_return(service)
     allow(service).to receive(:entity_sets) do
-      @responses.shift || raise(OData4::Errors::AccessDenied, nil)
+      @responses.shift || raise(ResoWebApi::Errors::AccessDenied, nil)
     end
   end
 
@@ -42,7 +42,7 @@ RSpec.describe ResoWebApi::ServiceProxy do
 
     it 'gives up after that' do
       @responses = [nil, nil]
-      expect { subject.entity_sets }.to raise_error(OData4::Errors::AccessDenied)
+      expect { subject.entity_sets }.to raise_error(ResoWebApi::Errors::AccessDenied)
     end
   end
 end

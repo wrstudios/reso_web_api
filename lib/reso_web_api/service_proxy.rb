@@ -46,7 +46,7 @@ module ResoWebApi
       attempts = 0
       begin
         yield
-      rescue OData4::Errors::AccessDenied
+      rescue ResoWebApi::Errors::AccessDenied
         unless (attempts += 1) > 1
           @client.authenticate
           retry
