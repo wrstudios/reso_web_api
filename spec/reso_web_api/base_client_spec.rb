@@ -18,11 +18,9 @@ RSpec.describe ResoWebApi::BaseClient do
       end
       it 'allows customizing the middleware stack by passing a block' do
         subject.connection do |conn|
-          conn.adapter :typhoeus
+          conn.request :basic_auth, 'aladdin', 'simsalabim'
         end
-        expect(subject.connection.builder.handlers).to eq([
-          Faraday::Adapter::Typhoeus
-        ])
+        expect(subject.connection.builder.handlers).to include(Faraday::Request::BasicAuthentication)
       end
     end
 
@@ -43,9 +41,7 @@ RSpec.describe ResoWebApi::BaseClient do
 
     describe '#connection' do
       it 'uses the correct adapter' do
-        expect(subject.connection.builder.handlers).to include(
-          Faraday::Adapter::Typhoeus
-        )
+        expect(subject.connection.builder.handlers).to include(Faraday::Adapter::Typhoeus)
       end
     end
 
