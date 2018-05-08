@@ -17,11 +17,6 @@ module ResoWebApi
       @access = @auth.authenticate(*args)
     end
 
-    # Refresh the current access.
-    def refresh
-      @access = @auth.refresh(@access)
-    end
-
     # Headers to be send along with requests
     # @return [Hash] The request headers
     def headers

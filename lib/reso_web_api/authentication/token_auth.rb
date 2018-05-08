@@ -21,10 +21,14 @@ module ResoWebApi
 
         unless response.success?
           message = "#{response.reason_phrase}: #{body['error'] || response.body}"
-          raise ClientError, status: response.status, message: message
+          raise Errors::AccessDenied, response: response, message: message
         end
 
         Access.new(body)
+      end
+
+      def connection
+        super.basic_auth(@api_key, @api_secret) && super
       end
 
       private
@@ -36,10 +40,6 @@ module ResoWebApi
           grant_type:    grant_type,
           scope:         scope
         }
-      end
-
-      def connection
-        super.basic_auth(@api_key, @api_secret) && super
       end
     end
   end

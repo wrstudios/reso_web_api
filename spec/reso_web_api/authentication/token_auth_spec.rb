@@ -16,7 +16,7 @@ RSpec.describe ResoWebApi::Authentication::TokenAuth do
 
     it 'raises an exception when the credentials are invalid' do
       config[:api_secret] = 'T0pS3cr3t'
-      expect { subject.authenticate }.to raise_error(ResoWebApi::ClientError)
+      expect { subject.authenticate }.to raise_error(ResoWebApi::Errors::AccessDenied)
     end
   end
 end

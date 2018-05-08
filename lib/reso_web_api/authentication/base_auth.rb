@@ -4,7 +4,7 @@ module ResoWebApi
   module Authentication
     # This base class defines the basic interface support by all client authentication implementations.
     class BaseAuth < BaseClient
-      attr_accessor :session
+      attr_reader :access
 
       def initialize(api_key:, api_secret:, endpoint:, user_agent: USER_AGENT)
         super(endpoint: endpoint, user_agent: user_agent)
@@ -18,16 +18,11 @@ module ResoWebApi
         raise NotImplementedError, 'Implement me!'
       end
 
-      # @return [Boolean] Whether the access object can be refreshed
-      # @param access [Access|String] the access to refresh
-      def refreshable?(access)
-        false
-      end
-
-      # @abstract Refresh the authentication and return the refreshed access
-      # @param access [Access|String] the access to refresh
-      def refresh(access)
-        raise NotImplementedError, 'Implement Me!'
+      # Ensure that a valid access token is present or raise an exception
+      # @raise [ResoWebApi::Errors::AccessDenied] If authentication fails
+      def ensure_valid_access!
+        @access = authenticate unless access && access.valid?
+        access
       end
     end
   end
