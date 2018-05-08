@@ -24,7 +24,7 @@ module ResoWebApi
         conn.request :url_encoded
         yield conn if block_given?
         # conn.options[:timeout] = self.timeout
-        conn.adapter adapter
+        conn.adapter adapter unless conn.builder.send(:adapter_set?)
       end
     end
 
