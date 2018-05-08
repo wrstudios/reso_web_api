@@ -1,5 +1,4 @@
 require "bundler/setup"
-require "dotenv/load"
 require "reso_web_api"
 
 # Override standard logger for testing
