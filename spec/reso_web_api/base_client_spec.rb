@@ -1,16 +1,36 @@
 RSpec.describe ResoWebApi::BaseClient do
-  let(:endpoint) { 'http://www.google.com/' }
+  let(:endpoint) { 'https://service.my-mls.org/' }
+
+  describe '.new' do
+    it 'requires endpoint option' do
+      expect { ResoWebApi::BaseClient.new }.to raise_error(ArgumentError, /endpoint/)
+    end
+  end
 
   context 'with default options' do
     subject { ResoWebApi::BaseClient.new(endpoint: endpoint) }
 
+    describe '#endpoint' do
+      it { expect(subject.endpoint).to eq(endpoint) }
+    end
+
     describe '#adapter' do
-      it { expect(subject.adapter).to eq(Faraday.default_adapter) }
+      it 'uses default value' do
+        expect(subject.adapter).to eq(Faraday.default_adapter)
+      end
+    end
+
+    describe '#user_agent' do
+      it 'uses default value' do
+        expect(subject.user_agent).to eq(ResoWebApi::BaseClient::USER_AGENT)
+      end
     end
 
     describe '#connection' do
       it { expect(subject.connection).to be_a(Faraday::Connection) }
-      it { expect(subject.connection.url_prefix.to_s).to eq(endpoint) }
+      it 'uses the endpoint URL' do
+        expect(subject.connection.url_prefix.to_s).to eq(endpoint)
+      end
       it 'uses default middleware' do
         expect(subject.connection.builder.handlers).to eq([
           Faraday::Request::UrlEncoded, Faraday::Adapter::NetHttp
@@ -42,6 +62,12 @@ RSpec.describe ResoWebApi::BaseClient do
     describe '#connection' do
       it 'uses the correct adapter' do
         expect(subject.connection.builder.handlers).to include(Faraday::Adapter::Typhoeus)
+      end
+    end
+
+    describe '#user_agent' do
+      it 'uses the provided value' do
+        expect(subject.user_agent).to eq(user_agent)
       end
     end
 

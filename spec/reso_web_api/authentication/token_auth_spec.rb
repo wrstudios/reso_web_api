@@ -1,10 +1,10 @@
 RSpec.describe ResoWebApi::Authentication::TokenAuth do
   subject { ResoWebApi::Authentication::TokenAuth.new(config) }
   let(:config) {{
-    endpoint:   'https://auth.my-mls.org/connect/token',
-    api_key:    'deadbeef',
-    api_secret: 'T0pS3cr3t',
-    scope:      'odata'
+    endpoint:      'https://auth.my-mls.org/connect/token',
+    client_id:     'deadbeef',
+    client_secret: 'T0pS3cr3t',
+    scope:         'odata'
   }}
   let(:valid_auth) {
     {

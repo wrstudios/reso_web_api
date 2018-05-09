@@ -1,16 +1,8 @@
-require_relative '../base_client'
-
 module ResoWebApi
   module Authentication
     # This base class defines the basic interface support by all client authentication implementations.
     class BaseAuth < BaseClient
       attr_reader :access
-
-      def initialize(api_key:, api_secret:, endpoint:, user_agent: USER_AGENT)
-        super(endpoint: endpoint, user_agent: user_agent)
-        @api_key    = api_key
-        @api_secret = api_secret
-      end
 
       # @abstract Perform requests to authenticate the client with the API
       # @return [Access] The access token object

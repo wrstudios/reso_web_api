@@ -1,14 +1,10 @@
 require_relative 'base_client'
-require_relative 'authentication/middleware'
+require_relative 'authentication'
 
 module ResoWebApi
   # Main class to run requests against a RESO Web API server.
   class Client < BaseClient
-    # Creates a new API client.
-    def initialize(endpoint:, auth:, user_agent: USER_AGENT, adapter: ADAPTER)
-      super(endpoint: endpoint, user_agent: user_agent, adapter: adapter)
-      @auth = auth
-    end
+    option :auth
 
     # Headers to be send along with requests
     # @return [Hash] The request headers

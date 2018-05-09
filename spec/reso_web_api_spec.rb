@@ -3,13 +3,13 @@ RSpec.describe ResoWebApi do
     expect(subject::VERSION).to match(/\d+\.\d+\.\d+/)
   end
 
-  describe '#client' do
+  xdescribe '#client' do
     it 'gives me a client connection' do
       expect(subject.client).to be_a(ResoWebApi::Client)
     end
   end
 
-  describe '#reset' do
+  xdescribe '#reset' do
     it 'resets my connection' do
       client = subject.client
       subject.reset

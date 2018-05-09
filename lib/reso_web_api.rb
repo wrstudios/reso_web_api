@@ -2,14 +2,11 @@ require 'json'
 require 'logger'
 require 'odata4'
 
-require 'reso_web_api/errors'
-require 'reso_web_api/configuration'
-require 'reso_web_api/client'
 require 'reso_web_api/version'
+require 'reso_web_api/errors'
+require 'reso_web_api/client'
 
 module ResoWebApi
-  extend Configuration
-
   def self.client(options = {})
     Thread.current[:reso_web_api_client] ||= ResoWebApi::Client.new(options)
   end

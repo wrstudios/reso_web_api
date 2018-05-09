@@ -1,21 +1,16 @@
 require 'faraday'
+require 'dry-initializer'
 
 module ResoWebApi
   # Base class for Faraday-based HTTP clients
   class BaseClient
-    attr_reader :endpoint, :user_agent, :adapter
+    extend Dry::Initializer
+
+    option :endpoint
+    option :user_agent, default: proc { USER_AGENT }
+    option :adapter, default: proc { Faraday::default_adapter }
 
     USER_AGENT = "Reso Web API Ruby Gem v#{VERSION}"
-    ADAPTER    = Faraday.default_adapter
-
-    # Create a new client instance.
-    # @param endpoint [String] The base URL for requests
-    # @param user_agent [String] The user agent header to send
-    def initialize(endpoint:, user_agent: USER_AGENT, adapter: ADAPTER)
-      @endpoint   = endpoint
-      @user_agent = user_agent
-      @adapter    = adapter
-    end
 
     # Return the {Faraday::Connection} object for this client.
     # Yields the connection object being constructed (for customzing middleware).

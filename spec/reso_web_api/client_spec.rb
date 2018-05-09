@@ -4,6 +4,12 @@ RSpec.describe ResoWebApi::Client do
   let(:access) { instance_double('ResoWebApi::Authentication::Access') }
   let(:endpoint) { 'http://services.odata.org/V4/OData/OData.svc' }
 
+  describe '.new' do
+    it 'requires auth option' do
+      expect { ResoWebApi::Client.new(endpoint: endpoint) }.to raise_error(ArgumentError, /auth/)
+    end
+  end
+
   describe '#connection' do
     it 'uses authentication middleware' do
       expect(subject.connection.builder.handlers).to include(
