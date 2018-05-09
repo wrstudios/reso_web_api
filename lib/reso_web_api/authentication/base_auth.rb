@@ -24,6 +24,11 @@ module ResoWebApi
         @access = authenticate unless access && access.valid?
         access
       end
+
+      # Resets access
+      def reset
+        @access = nil
+      end
     end
   end
 end

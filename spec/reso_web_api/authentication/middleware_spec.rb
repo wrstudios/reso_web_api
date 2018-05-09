@@ -1,16 +1,23 @@
 RSpec.describe ResoWebApi::Authentication::Middleware do
-  # @see https://github.com/lostisland/faraday/blob/master/test/authentication_middleware_test.rb
-  def conn(response)
+  let(:access) { instance_double('ResoWebApi::Authentication::Access') }
+  let(:auth)   { instance_double('ResoWebApi::Authentication::BaseAuth') }
+  let(:auth_success) do
+    # Stub response to echo authorization header
+    -> (env) { [200, {}, env[:request_headers]['Authorization']] }
+  end
+  let(:auth_failure) do
+    # Stub response to return 401 Access Denied
+    -> (env) { [401, {}, 'Access Denied'] }
+  end
+  let(:conn) do
+    # @see https://github.com/lostisland/faraday/blob/master/test/authentication_middleware_test.rb
     Faraday::Connection.new('http://example.net') do |conn|
       conn.use ResoWebApi::Authentication::Middleware, auth
       conn.adapter :test do |stub|
-        stub.get('/auth-echo', &response)
+        stub.get('/auth-echo') { |env| @responses.shift.call(env) }
       end
     end
   end
-
-  let(:access) { instance_double('ResoWebApi::Authentication::Access') }
-  let(:auth)   { instance_double('ResoWebApi::Authentication::BaseAuth') }
 
   before do
     # Mock access
@@ -22,19 +29,23 @@ RSpec.describe ResoWebApi::Authentication::Middleware do
   end
 
   it 'sets authorization header' do
-    # Stub response to echo authorization header
-    response = -> (env) { [200, {}, env[:request_headers]['Authorization']] }
-    expect(conn(response).get('/auth-echo').body).to eq('Bearer 0xdeadbeef')
+    @responses = [auth_success]
+    expect(conn.get('/auth-echo').body).to eq('Bearer 0xdeadbeef')
   end
 
-  it 'raises an exception if authorization was rejected' do
-    # Stub response to return 401 Access Denied
-    response = -> (env) { [401, {}, 'Access Denied'] }
-    expect { conn(response).get('/auth-echo') }.to raise_error(ResoWebApi::Errors::AccessDenied)
-  end
+  context 'when service rejects authentication' do
+    it 'retries the request once' do
+      @responses = [auth_failure, auth_success]
+      # Expect middleware to retry authentication and eventually return a value
+      expect(auth).to receive(:ensure_valid_access!).twice
+      expect(auth).to receive(:reset)
+      expect(conn.get('/auth-echo').body).to eq('Bearer 0xdeadbeef')
+    end
 
-  it 'raises an exception if credentials were rejected' do
-    expect(auth).to receive(:ensure_valid_access!).and_raise(ResoWebApi::Errors::AccessDenied)
-    expect { conn(nil).get('/auth-echo') }.to raise_error(ResoWebApi::Errors::AccessDenied)
+    it 'gives up after that' do
+      @responses = [auth_failure, auth_failure]
+      expect(auth).to receive(:reset)
+      expect { conn.get('/auth-echo') }.to raise_error(ResoWebApi::Errors::AccessDenied)
+    end
   end
 end

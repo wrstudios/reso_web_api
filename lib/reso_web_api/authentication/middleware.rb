@@ -12,10 +12,19 @@ module ResoWebApi
       end
 
       def call(request_env)
-        authorize_request(request_env)
+        retries = 1
 
-        @app.call(request_env).on_complete do |response_env|
-          check_authorization_status(response_env)
+        begin
+          authorize_request(request_env)
+
+          @app.call(request_env).on_complete do |response_env|
+            raise_if_unauthorized(response_env)
+          end
+        rescue Errors::AccessDenied
+          raise if retries == 0
+          @auth.reset
+          retries -= 1
+          retry
         end
       end
 
@@ -29,8 +38,7 @@ module ResoWebApi
         )
       end
 
-      def check_authorization_status(response_env)
-        # TODO: raise specific error class
+      def raise_if_unauthorized(response_env)
         raise Errors::AccessDenied if response_env[:status] == 401
       end
     end

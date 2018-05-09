@@ -2,6 +2,7 @@ RSpec.describe ResoWebApi::Authentication::BaseAuth do
   subject do
     ResoWebApi::Authentication::BaseAuth.new(endpoint: '', api_key: '', api_secret: '')
   end
+  let(:access) { instance_double('ResoWebApi::Authentication::Access') }
 
   describe '#authenticate' do
     it 'should raise an error' do
@@ -10,8 +11,6 @@ RSpec.describe ResoWebApi::Authentication::BaseAuth do
   end
 
   describe '#ensure_valid_access!' do
-    let(:access) { instance_double('ResoWebApi::Authentication::Access') }
-
     it 'authenticates and returns access' do
       expect(subject).to receive(:authenticate).and_return(access)
       expect(subject.ensure_valid_access!).to eq(access)
@@ -27,6 +26,13 @@ RSpec.describe ResoWebApi::Authentication::BaseAuth do
     it 'raises an exception if authentication fails' do
       expect(subject).to receive(:authenticate).and_raise(ResoWebApi::Errors::AccessDenied)
       expect { subject.ensure_valid_access! }.to raise_error(ResoWebApi::Errors::AccessDenied)
+    end
+  end
+
+  describe 'reset' do
+    it 'resets authentication' do
+      subject.instance_variable_set(:@access, access)
+      expect { subject.reset }.to change { subject.access }.to(nil)
     end
   end
 end
