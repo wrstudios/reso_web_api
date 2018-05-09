@@ -1,9 +1,12 @@
 require_relative 'base_client'
 require_relative 'authentication'
+require_relative 'resources'
 
 module ResoWebApi
   # Main class to run requests against a RESO Web API server.
   class Client < BaseClient
+    include Resources
+
     option :auth
 
     # Headers to be send along with requests

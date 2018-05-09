@@ -10,14 +10,8 @@ module ResoWebApi
 
     STANDARD_RESOURCES.each do |method, resource|
       define_method(method) do
-        handle_retryable_errors do
-          resources[resource]
-        end
+        service[resource]
       end
-    end
-
-    def resources
-      service
     end
   end
 end

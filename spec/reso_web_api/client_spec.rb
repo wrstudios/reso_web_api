@@ -36,4 +36,17 @@ RSpec.describe ResoWebApi::Client do
       expect(subject.service).to be_a(OData4::Service)
     end
   end
+
+  ResoWebApi::Resources::STANDARD_RESOURCES.each do |method, resource|
+    describe "##{method}" do
+      # Stub out service to avoid making network requests
+      let(:service) { instance_double('OData4::Service') }
+      before { subject.instance_variable_set(:@service, service) }
+
+      it "gives me access to the #{resource} resource" do
+        expect(service).to receive(:[]).with(resource)
+        subject.send(method)
+      end
+    end
+  end
 end
