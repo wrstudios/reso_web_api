@@ -4,21 +4,8 @@ RSpec.describe ResoWebApi::Client do
   let(:access) { instance_double('ResoWebApi::Authentication::Access') }
   let(:endpoint) { 'http://services.odata.org/V4/OData/OData.svc' }
 
-  describe '#authenticate' do
-    it 'calls #authenticate on the auth strategy with a given code' do
-      expect(auth).to receive(:authenticate).with('some-code')
-      subject.authenticate('some-code')
-    end
-
-    it "sets the client's access to the result of the call" do
-      allow(auth).to receive(:authenticate).and_return(access)
-      subject.authenticate
-      expect(subject.access).to eq(access)
-    end
-  end
-
   describe '#connection' do
-    it 'injects authentication middleware' do
+    it 'uses authentication middleware' do
       expect(subject.connection.builder.handlers).to include(
         ResoWebApi::Authentication::Middleware
       )
@@ -26,8 +13,21 @@ RSpec.describe ResoWebApi::Client do
   end
 
   describe '#service' do
-    it 'returns a service proxy' do
-      expect(subject.service).to be_a(ResoWebApi::ServiceProxy)
+    let(:stub) { Faraday::Adapter::Test::Stubs.new }
+
+    before do
+      allow(auth).to receive(:ensure_valid_access!)
+      allow(auth).to receive(:access).and_return(access)
+      # Use Faraday test adapter to avoid making real network connections
+      subject.connection { |conn| conn.adapter :test, stub }
+      # Stub out connection to OData service
+      stub.get('/V4/OData/OData.svc/$metadata') { |env| [200, {}, ''] }
+    end
+
+    it 'returns a OData service object with an authorized connection' do
+      expect(access).to receive(:token).and_return('0xdeadbeef')
+      expect(access).to receive(:token_type).and_return('Bearer')
+      expect(subject.service).to be_a(OData4::Service)
     end
   end
 end

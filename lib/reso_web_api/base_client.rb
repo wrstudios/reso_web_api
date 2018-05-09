@@ -18,6 +18,7 @@ module ResoWebApi
     end
 
     # Return the {Faraday::Connection} object for this client.
+    # Yields the connection object being constructed (for customzing middleware).
     # @return [Faraday::Connection] The connection object
     def connection(&block)
       @connection ||= Faraday.new(url: endpoint, headers: headers) do |conn|
