@@ -1,6 +1,6 @@
 RSpec.describe ResoWebApi::Authentication::Middleware do
   let(:access) { instance_double('ResoWebApi::Authentication::Access') }
-  let(:auth)   { instance_double('ResoWebApi::Authentication::BaseAuth') }
+  let(:auth)   { instance_double('ResoWebApi::Authentication::AuthStrategy') }
   let(:auth_success) do
     # Stub response to echo authorization header
     -> (env) { [200, {}, env[:request_headers]['Authorization']] }

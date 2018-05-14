@@ -1,7 +1,7 @@
 module ResoWebApi
   module Authentication
     # This base class defines the basic interface support by all client authentication implementations.
-    class BaseAuth < BaseClient
+    class AuthStrategy < BaseClient
       attr_reader :access
 
       # @abstract Perform requests to authenticate the client with the API

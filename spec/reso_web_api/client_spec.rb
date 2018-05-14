@@ -1,6 +1,6 @@
 RSpec.describe ResoWebApi::Client do
   subject { ResoWebApi::Client.new(endpoint: endpoint, auth: auth) }
-  let(:auth) { instance_double('ResoWebApi::Authentication::BaseAuth') }
+  let(:auth) { instance_double('ResoWebApi::Authentication::AuthStrategy') }
   let(:access) { instance_double('ResoWebApi::Authentication::Access') }
   let(:endpoint) { 'http://services.odata.org/V4/OData/OData.svc' }
 

@@ -3,7 +3,7 @@ module ResoWebApi
     # This implements a basic token authentication, in which a username/password
     # (or API key / secret) combination is sent to a special token endpoint in
     # exchange for a HTTP Bearer token with a limited lifetime.
-    class TokenAuth < BaseAuth
+    class TokenAuth < AuthStrategy
       option :client_id
       option :client_secret
       option :grant_type, default: proc { 'client_credentials' }

@@ -1,6 +1,6 @@
-RSpec.describe ResoWebApi::Authentication::BaseAuth do
+RSpec.describe ResoWebApi::Authentication::AuthStrategy do
   subject do
-    ResoWebApi::Authentication::BaseAuth.new(endpoint: '')
+    ResoWebApi::Authentication::AuthStrategy.new(endpoint: '')
   end
   let(:access) { instance_double('ResoWebApi::Authentication::Access') }
 
