@@ -20,10 +20,19 @@ RSpec.describe ResoWebApi::Client do
       expect(client.auth).to be_a(ResoWebApi::Authentication::AuthStrategy)
     end
 
+    it 'defaults to TokenAuth if no strategy was selected' do
+      client = ResoWebApi::Client.new(endpoint: endpoint, auth: {
+        endpoint: '', client_id: '', client_secret: '', scope: ''
+      })
+      expect(client.auth).to be_a(ResoWebApi::Authentication::TokenAuth)
+    end
+
     it 'ensures that a valid auth strategy is selected' do
       expect {
-        ResoWebApi::Client.new(endpoint: endpoint, auth: {})
-      }.to raise_error(ArgumentError, /auth strategy/)
+        ResoWebApi::Client.new(endpoint: endpoint, auth: {
+          strategy: Object
+        })
+      }.to raise_error(ArgumentError, /not a valid auth strategy/)
     end
   end
 

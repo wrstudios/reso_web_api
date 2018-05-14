@@ -41,11 +41,11 @@ module ResoWebApi
 
     def ensure_valid_auth_strategy!
       if auth.is_a?(Hash)
-        strategy = auth.delete(:strategy)
+        strategy = auth.delete(:strategy) || Authentication::TokenAuth
         if strategy.is_a?(Class) && strategy <= Authentication::AuthStrategy
           @auth = strategy.new(auth)
         else
-          raise ArgumentError, "#{auth} is not a valid auth strategy"
+          raise ArgumentError, "#{strategy} is not a valid auth strategy"
         end
       end
     end

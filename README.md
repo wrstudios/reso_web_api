@@ -41,6 +41,7 @@ end
 ```
 
 Note that if you choose this option, you _may_ specify the strategy implementation by passing its _class_ as the `:strategy` option.
+If you omit the `:strategy` parameter, it will default to `ResoWebApi::Authentication::TokenAuth`.
 
 ```ruby
 # Iterate over all properties -- WARNING! Might take a long time
