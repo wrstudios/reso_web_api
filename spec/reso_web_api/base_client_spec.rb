@@ -48,6 +48,10 @@ RSpec.describe ResoWebApi::BaseClient do
       it { expect(subject.headers).to be_a(Hash) }
       it { expect(subject.headers).to include(user_agent: ResoWebApi::BaseClient::USER_AGENT) }
     end
+
+    describe '#logger' do
+      it { expect(subject.logger).to be_a(Logger) }
+    end
   end
 
   context 'when overriding adapter and user agent' do

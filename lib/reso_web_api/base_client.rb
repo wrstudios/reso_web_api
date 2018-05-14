@@ -9,6 +9,7 @@ module ResoWebApi
     option :endpoint
     option :user_agent, default: proc { USER_AGENT }
     option :adapter, default: proc { Faraday::default_adapter }
+    option :logger, default: proc { ResoWebApi.logger }
 
     USER_AGENT = "Reso Web API Ruby Gem v#{VERSION}"
 
@@ -18,8 +19,8 @@ module ResoWebApi
     def connection(&block)
       @connection ||= Faraday.new(url: endpoint, headers: headers) do |conn|
         conn.request :url_encoded
+        conn.response :logger, logger
         yield conn if block_given?
-        # conn.options[:timeout] = self.timeout
         conn.adapter adapter unless conn.builder.send(:adapter_set?)
       end
     end
