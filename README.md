@@ -22,21 +22,29 @@ Or install it yourself as:
 
 ## Usage
 
-Basic
+Instantiating an API client requires two things: an endpoint (i.e. service URL) and an authentication strategy.
+You may either instantiate the auth strategy directly and pass it to the client constructor (in the `:auth` parameter), or you may choose to pass a nested hash with options for configuring the strategy instead, as below:
 
 ```ruby
 require 'reso_web_api'
 
-ResoWebApi.configure do |config|
-  config.service_url = 'https://api.my-mls.org/RESO/OData/'
-  config.auth_url    = 'https://oauth.my-mls.org/connect/token'
-  config.auth_scope  = 'odata'
-  config.api_key     = 'deadbeef'
-  config.api_secret  = 'T0pS3cr3t'
+client = ResoWebApi::Client.new(
+  endpoint: 'https://api.my-mls.org/RESO/OData/',
+  auth: {
+    strategy:      ResoWebApi::Authentication::TokenAuth,
+    endpoint:      'https://oauth.my-mls.org/connect/token',
+    client_id:     'deadbeef',
+    client_secret: 'T0pS3cr3t',
+    scope:         'odata'
+  }
 end
+```
 
+Note that if you choose this option, you _may_ specify the strategy implementation by passing its _class_ as the `:strategy` option.
+
+```ruby
 # Iterate over all properties -- WARNING! Might take a long time
-ResoWebApi.client.properties.each do |property|
+client.properties.each do |property|
   puts "#{property['ListPrice']} #{property['StandardStatus']}"
 end
 ```

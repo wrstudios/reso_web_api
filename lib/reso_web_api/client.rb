@@ -9,6 +9,11 @@ module ResoWebApi
 
     option :auth
 
+    def initialize(options = {})
+      super(options)
+      ensure_valid_auth_strategy!
+    end
+
     # Headers to be send along with requests
     # @return [Hash] The request headers
     def headers
@@ -30,6 +35,19 @@ module ResoWebApi
     # @return [OData4::Service] The service instance.
     def service
       @service ||= OData4::Service.new(connection)
+    end
+
+    private
+
+    def ensure_valid_auth_strategy!
+      if auth.is_a?(Hash)
+        strategy = auth.delete(:strategy)
+        if strategy.is_a?(Class) && strategy <= Authentication::AuthStrategy
+          @auth = strategy.new(auth)
+        else
+          raise ArgumentError, "#{auth} is not a valid auth strategy"
+        end
+      end
     end
   end
 end

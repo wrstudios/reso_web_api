@@ -8,6 +8,23 @@ RSpec.describe ResoWebApi::Client do
     it 'requires auth option' do
       expect { ResoWebApi::Client.new(endpoint: endpoint) }.to raise_error(ArgumentError, /auth/)
     end
+
+    it 'instantiates auth strategy if given a hash' do
+      client = ResoWebApi::Client.new(
+        endpoint: endpoint,
+        auth: {
+          strategy: ResoWebApi::Authentication::AuthStrategy,
+          endpoint: ''
+        }
+      )
+      expect(client.auth).to be_a(ResoWebApi::Authentication::AuthStrategy)
+    end
+
+    it 'ensures that a valid auth strategy is selected' do
+      expect {
+        ResoWebApi::Client.new(endpoint: endpoint, auth: {})
+      }.to raise_error(ArgumentError, /auth strategy/)
+    end
   end
 
   describe '#connection' do
