@@ -1,16 +1,8 @@
 require "bundler/setup"
 require "reso_web_api"
 
-# Override standard logger for testing
-module ResoWebApi
-  def self.logger
-    if @logger.nil?
-      @logger = Logger.new('log/test.log')
-      @logger.level = Logger::DEBUG
-    end
-    @logger
-  end
-end
+# Load all files from `spec/support`
+Dir[File.dirname(__FILE__) + "/support/**/*.rb"].each { |f| require f }
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
