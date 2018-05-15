@@ -4,11 +4,11 @@ A Ruby library to connects to MLS servers conforming to the [RESO Web API][reso-
 
 [reso-web-api]: https://www.reso.org/reso-web-api/
 
-[![Build Status](https://app.codeship.com/projects/c9f88f50-3a07-0136-6878-6eab29180a68/status?branch=master)](https://app.codeship.com/projects/290070)
-[![Dependency Status](https://gemnasium.com/badges/github.com/wrstudios/reso_web_api.svg)](https://gemnasium.com/github.com/wrstudios/reso_web_api)
-
-[![Documentation](http://inch-ci.org/github/wrstudios/reso_web_api.png?branch=master)](http://www.rubydoc.info/github/wrstudios/reso_web_api/master)
 [![Gem Version](https://badge.fury.io/rb/reso_web_api.svg)](https://badge.fury.io/rb/reso_web_api)
+[![Build Status](https://app.codeship.com/projects/c9f88f50-3a07-0136-6878-6eab29180a68/status?branch=master)](https://app.codeship.com/projects/290070)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/6e707a367bfdd609fc76/test_coverage)](https://codeclimate.com/github/wrstudios/reso_web_api/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/6e707a367bfdd609fc76/maintainability)](https://codeclimate.com/github/wrstudios/reso_web_api/maintainability)
+[![Documentation](http://inch-ci.org/github/wrstudios/reso_web_api.png?branch=master)](http://www.rubydoc.info/github/wrstudios/reso_web_api/master)
 
 ## Installation
 
