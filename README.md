@@ -22,6 +22,8 @@ Or install it yourself as:
 
 ## Usage
 
+### Authentication
+
 Instantiating an API client requires two things: an endpoint (i.e. service URL) and an authentication strategy.
 You may either instantiate the auth strategy directly and pass it to the client constructor (in the `:auth` parameter), or you may choose to pass a nested hash with options for configuring the strategy instead, as below:
 
@@ -43,11 +45,32 @@ end
 Note that if you choose this option, you _may_ specify the strategy implementation by passing its _class_ as the `:strategy` option.
 If you omit the `:strategy` parameter, it will default to `ResoWebApi::Authentication::TokenAuth`.
 
+### Accessing Data
+
+#### Standard Resources
+
+Since most RESO Web API servers will likely adhere to the RESO Data Dictionary, we've created some shortcuts for the standard resources
+
 ```ruby
 # Iterate over all properties -- WARNING! Might take a long time
 client.properties.each do |property|
   puts "#{property['ListPrice']} #{property['StandardStatus']}"
 end
+```
+
+The following methods are provided:
+
+- Property: use `#properties`
+- Member: use `#members`
+- Office: use `#office`
+- Media: use `#media`
+
+#### Other Resources
+
+Other resources may be access using the `#resources` method on the client, which may be accessed as a hash like this:
+
+```ruby
+client.resources['OpenHouse'].first # Access the 'OpenHouse' collectionh
 ```
 
 ## Development
