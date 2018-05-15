@@ -10,8 +10,12 @@ module ResoWebApi
 
     STANDARD_RESOURCES.each do |method, resource|
       define_method(method) do
-        service[resource]
+        resources[resource]
       end
+    end
+
+    def resources
+      service
     end
   end
 end
