@@ -31,6 +31,7 @@ Or install it yourself as:
 ### Authentication
 
 Instantiating an API client requires two things: an endpoint (i.e. service URL) and an authentication strategy.
+
 You may either instantiate the auth strategy directly and pass it to the client constructor (in the `:auth` parameter), or you may choose to pass a nested hash with options for configuring the strategy instead, as below:
 
 ```ruby
@@ -50,6 +51,8 @@ end
 
 Note that if you choose this option, you _may_ specify the strategy implementation by passing its _class_ as the `:strategy` option.
 If you omit the `:strategy` parameter, it will default to `ResoWebApi::Authentication::TokenAuth`.
+
+For a list of available authentication strategies and usage examples, please [see below](#authentication-strategies).
 
 ### Accessing Data
 
@@ -76,7 +79,63 @@ The following methods are provided:
 Other resources may be access using the `#resources` method on the client, which may be accessed as a hash like this:
 
 ```ruby
-client.resources['OpenHouse'].first # Access the 'OpenHouse' collectionh
+client.resources['OpenHouse'].first # Access the 'OpenHouse' collection
+```
+
+## Authentication Strategies
+
+Since the details of authentication may vary from vendor to vendor, this gem attempts to stay flexible by providing a modular authentication system.
+
+### Available Strategies
+
+Currently, we provide the following authentication strategies:
+
+#### `SimpleTokenAuth`
+
+A simple strategy that works with a static access token. Often used for development access, where security is not a major concern.
+
+##### Configuration
+
+- `access_token`: The access token value (`String`).
+- `token_type`: The token type (`String`, optional). Defaults to `Bearer`.
+
+##### Example
+
+```ruby
+client = ResoWebApi::Client.new(
+  endpoint: 'https://api.my-mls.org/RESO/OData/',
+  auth: {
+    strategy: ResoWebApi::Authentication::SimpleTokenAuth,
+    access_token: 'abcdefg01234567890'
+  }
+)
+```
+
+#### `TokenAuth`
+
+A basic OAuth-based token strategy, where a Client ID/Secret pair is sent to a server in exchange for a temporary access token. Frequently used in production systems for its increased security over the static token strategy.
+
+##### Configuration
+
+- `endpoint`: The URL of the token server (`String`).
+- `client_id`: The Client ID (`String`).
+- `client_secret`: The Client Secret (`String`).
+- `scope`: The scope for the token (`String`).
+- `grant_type`: The grant type (`String`, optional). Defaults to `client_credentials`.
+
+##### Example
+
+```ruby
+client = ResoWebApi::Client.new(
+  endpoint: 'https://api.my-mls.org/RESO/OData/',
+  auth: {
+    strategy:      ResoWebApi::Authentication::TokenAuth,
+    endpoint:      'https://oauth.my-mls.org/connect/token',
+    client_id:     'deadbeef',
+    client_secret: 'T0pS3cr3t',
+    scope:         'odata'
+  }
+end
 ```
 
 ## Development
