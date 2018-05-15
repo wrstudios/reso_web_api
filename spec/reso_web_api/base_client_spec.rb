@@ -32,9 +32,9 @@ RSpec.describe ResoWebApi::BaseClient do
         expect(subject.connection.url_prefix.to_s).to eq(endpoint)
       end
       it 'uses default middleware' do
-        expect(subject.connection.builder.handlers).to eq([
+        expect(subject.connection.builder.handlers).to include(
           Faraday::Request::UrlEncoded, Faraday::Adapter::NetHttp
-        ])
+        )
       end
       it 'allows customizing the middleware stack by passing a block' do
         subject.connection do |conn|
