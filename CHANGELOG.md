@@ -3,6 +3,8 @@
 ## 0.2.1
 
 * Added `SimpleTokenAuth` strategy for using basic non-expiring, non-refreshable tokens
+* Share logger with OData service
+* Allow passing options to OData service
 
 ## 0.2.0
 

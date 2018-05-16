@@ -7,7 +7,10 @@ module ResoWebApi
   class Client < BaseClient
     include Resources
 
+    # Auth strategy (class instance or Hash)
     option :auth
+    # Options for OData service
+    option :odata, optional: true
 
     def initialize(options = {})
       super(options)
@@ -34,7 +37,14 @@ module ResoWebApi
     # authenticated and authorized connection
     # @return [OData4::Service] The service instance.
     def service
-      @service ||= OData4::Service.new(connection)
+      # puts odata, service_options
+      @service ||= OData4::Service.new(connection, service_options)
+    end
+
+    # Returns the default options used by the by the OData service
+    # @return [Hash] The options hash
+    def service_options
+      @service_options ||= { logger: logger }.merge(odata || {})
     end
 
     private

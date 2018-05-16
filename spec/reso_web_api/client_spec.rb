@@ -1,8 +1,10 @@
 RSpec.describe ResoWebApi::Client do
-  subject { ResoWebApi::Client.new(endpoint: endpoint, auth: auth) }
+  subject { ResoWebApi::Client.new(options) }
+  let(:options) {{ endpoint: endpoint, auth: auth }}
   let(:auth) { instance_double('ResoWebApi::Authentication::AuthStrategy') }
   let(:access) { instance_double('ResoWebApi::Authentication::Access') }
   let(:endpoint) { 'http://services.odata.org/V4/OData/OData.svc' }
+  let(:metadata) { 'spec/fixtures/files/metadata.xml' }
 
   describe '.new' do
     it 'requires auth option' do
@@ -47,25 +49,39 @@ RSpec.describe ResoWebApi::Client do
   describe '#service' do
     let(:stub) { Faraday::Adapter::Test::Stubs.new }
 
+    def stub_connection
+      # Use Faraday test adapter to avoid making real network connections
+      subject.connection { |conn| conn.adapter :test, stub }
+      # Stub out connection to OData service
+      stub.get('/V4/OData/OData.svc/$metadata') do |env|
+        [ 200, { content_type: 'application/xml' }, File.read(metadata) ] 
+      end
+    end
+
     before do
       # Stub auth
       allow(auth).to receive(:ensure_valid_access!)
       allow(auth).to receive(:access).and_return(access)
       # Stub access
-      expect(access).to receive(:token).and_return('0xdeadbeef')
-      expect(access).to receive(:token_type).and_return('Bearer')
-      # Use Faraday test adapter to avoid making real network connections
-      subject.connection { |conn| conn.adapter :test, stub }
-      # Stub out connection to OData service
-      stub.get('/V4/OData/OData.svc/$metadata') { |env| [200, {}, ''] }
+      allow(access).to receive(:token).and_return('0xdeadbeef')
+      allow(access).to receive(:token_type).and_return('Bearer')
     end
 
     it 'returns a OData service object with an authorized connection' do
+      stub_connection
+      expect(access).to receive(:token)
+      expect(access).to receive(:token_type)
       expect(subject.service).to be_a(OData4::Service)
     end
 
     it 'is aliased to #resources' do
+      stub_connection
       expect(subject.resources).to be_a(OData4::Service)
+    end
+
+    it 'uses OData options passed to constructor' do
+      options[:odata] = { metadata_file: metadata }
+      expect(subject.service.options).to include(metadata_file: metadata)
     end
   end
 

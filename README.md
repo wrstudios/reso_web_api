@@ -28,15 +28,23 @@ Or install it yourself as:
 
 ## Usage
 
-### Authentication
+### Quickstart
 
 Instantiating an API client requires two things: an endpoint (i.e. service URL) and an authentication strategy.
-
-You may either instantiate the auth strategy directly and pass it to the client constructor (in the `:auth` parameter), or you may choose to pass a nested hash with options for configuring the strategy instead, as below:
 
 ```ruby
 require 'reso_web_api'
 
+client = ResoWebApi::Client.new(endpoint: '<Service URL>', auth: auth)
+```
+
+The `:endpoint` option should need no further explanation, for `:auth`, read on below.
+
+### Authentication
+
+You may either instantiate the auth strategy directly and pass it to the client constructor (in the `:auth` parameter), or you may choose to pass a nested hash with options for configuring the strategy instead, as below:
+
+```ruby
 client = ResoWebApi::Client.new(
   endpoint: 'https://api.my-mls.org/RESO/OData/',
   auth: {
@@ -53,6 +61,16 @@ Note that if you choose this option, you _may_ specify the strategy implementati
 If you omit the `:strategy` parameter, it will default to `ResoWebApi::Authentication::TokenAuth`.
 
 For a list of available authentication strategies and usage examples, please [see below](#authentication-strategies).
+
+### Advanced Configuration
+
+The client is designed to work out-of-the-box and require as little configuration as possible (only endpoint and auth by default).
+However, if you need more control, there are several additional settings that can be configured using the constructor.
+
+- `:user_agent`: Sets the `User-Agent` header sent to the service (defaults to `Reso Web API Ruby Gem $VERSION`)
+- `:adapter`: Sets the Faraday adapter used for the connection (defaults to `Net::HTTP`)
+- `:logger`: You may pass your own logger to a client instance. By default, each instance will use the global logger defined on the `ResoWebApi` module, which logs to STDOUT. You can also change the logger on the module itself, which will then be used for all new client instances you create.
+- `:odata`: If you need to pass any special options to the OData service, you may do so here.
 
 ### Accessing Data
 
