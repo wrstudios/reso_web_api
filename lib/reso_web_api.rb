@@ -1,6 +1,6 @@
 require 'json'
 require 'logger'
-require 'odata4'
+require 'frodata'
 
 require 'reso_web_api/version'
 require 'reso_web_api/errors'

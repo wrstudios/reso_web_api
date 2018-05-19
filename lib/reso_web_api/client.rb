@@ -33,12 +33,12 @@ module ResoWebApi
       end
     end
 
-    # Returns a proxied {OData4::Service} that attempts to ensure a  properly
+    # Returns a proxied {FrOData::Service} that attempts to ensure a  properly
     # authenticated and authorized connection
-    # @return [OData4::Service] The service instance.
+    # @return [FrOData::Service] The service instance.
     def service
       # puts odata, service_options
-      @service ||= OData4::Service.new(connection, service_options)
+      @service ||= FrOData::Service.new(connection, service_options)
     end
 
     # Returns the default options used by the by the OData service

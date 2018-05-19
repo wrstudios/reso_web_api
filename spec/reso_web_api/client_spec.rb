@@ -54,7 +54,7 @@ RSpec.describe ResoWebApi::Client do
       subject.connection { |conn| conn.adapter :test, stub }
       # Stub out connection to OData service
       stub.get('/V4/OData/OData.svc/$metadata') do |env|
-        [ 200, { content_type: 'application/xml' }, File.read(metadata) ] 
+        [ 200, { content_type: 'application/xml' }, File.read(metadata) ]
       end
     end
 
@@ -71,12 +71,12 @@ RSpec.describe ResoWebApi::Client do
       stub_connection
       expect(access).to receive(:token)
       expect(access).to receive(:token_type)
-      expect(subject.service).to be_a(OData4::Service)
+      expect(subject.service).to be_a(FrOData::Service)
     end
 
     it 'is aliased to #resources' do
       stub_connection
-      expect(subject.resources).to be_a(OData4::Service)
+      expect(subject.resources).to be_a(FrOData::Service)
     end
 
     it 'uses OData options passed to constructor' do
@@ -88,7 +88,7 @@ RSpec.describe ResoWebApi::Client do
   ResoWebApi::Resources::STANDARD_RESOURCES.each do |method, resource|
     describe "##{method}" do
       # Stub out service to avoid making network requests
-      let(:service) { instance_double('OData4::Service') }
+      let(:service) { instance_double('FrOData::Service') }
       before { subject.instance_variable_set(:@service, service) }
 
       it "gives me access to the #{resource} resource" do
