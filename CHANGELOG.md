@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.2.2
+
+* Switching to frodata gem
+* Make headers configurable, remove default accept header
+* Don't modify passed-in options hash
+
 ## 0.2.1
 
 * Added `SimpleTokenAuth` strategy for using basic non-expiring, non-refreshable tokens

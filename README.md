@@ -69,6 +69,7 @@ However, if you need more control, there are several additional settings that ca
 
 - `:user_agent`: Sets the `User-Agent` header sent to the service (defaults to `Reso Web API Ruby Gem $VERSION`)
 - `:adapter`: Sets the Faraday adapter used for the connection (defaults to `Net::HTTP`)
+- `:header`: Allows custom headers to be set on the connection. 
 - `:logger`: You may pass your own logger to a client instance. By default, each instance will use the global logger defined on the `ResoWebApi` module, which logs to STDOUT. You can also change the logger on the module itself, which will then be used for all new client instances you create.
 - `:odata`: If you need to pass any special options to the OData service, you may do so here.
 
