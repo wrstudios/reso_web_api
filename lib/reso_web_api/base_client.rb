@@ -7,9 +7,10 @@ module ResoWebApi
     extend Dry::Initializer
 
     option :endpoint
-    option :user_agent, default: proc { USER_AGENT }
     option :adapter, default: proc { Faraday::default_adapter }
+    option :headers, default: proc { {} }
     option :logger, default: proc { ResoWebApi.logger }
+    option :user_agent, default: proc { USER_AGENT }
 
     USER_AGENT = "Reso Web API Ruby Gem v#{VERSION}"
 
@@ -30,7 +31,7 @@ module ResoWebApi
     def headers
       {
         :user_agent => user_agent
-      }
+      }.merge(@headers)
     end
   end
 end
