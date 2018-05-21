@@ -17,12 +17,6 @@ module ResoWebApi
       ensure_valid_auth_strategy!
     end
 
-    # Headers to be send along with requests
-    # @return [Hash] The request headers
-    def headers
-      super.merge({ accept: 'application/json' })
-    end
-
     # Return the {Faraday::Connection} object for this client.
     # Yields the connection object being constructed (for customzing middleware).
     # @return [Faraday::Connection] The connection object
